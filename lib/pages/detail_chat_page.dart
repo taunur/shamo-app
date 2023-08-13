@@ -187,6 +187,10 @@ class DetailChatPage extends StatelessWidget {
             isSender: false,
             text: 'Good night, This item is only available in size 42 and 43',
           ),
+          ChatBubble(
+            isSender: true,
+            text: 'Owww, it suits me very well',
+          ),
         ],
       );
     }
