@@ -11,8 +11,13 @@ class CartPage extends StatelessWidget {
     PreferredSizeWidget header() {
       return AppBar(
         backgroundColor: bgColor1,
-        leading: Icon(
-          Icons.arrow_back_ios_rounded,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_rounded,
+          ),
           color: primaryTextColor,
         ),
         centerTitle: true,
@@ -137,7 +142,9 @@ class CartPage extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: defaultMargin),
               height: 50,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/checkout');
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: primaryColor,
                   shape: RoundedRectangleBorder(
