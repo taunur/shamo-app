@@ -81,7 +81,7 @@ class _ProductPageState extends State<ProductPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Container(
+                  SizedBox(
                       width: 154,
                       height: 44,
                       child: TextButton(
