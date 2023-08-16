@@ -1,11 +1,77 @@
-import 'package:flutter/material.dart';
-import 'package:shamo_app/style.dart';
+// ignore_for_file: use_build_context_synchronously
 
-class SignInPage extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/providers/auth_provider.dart';
+import 'package:shamo_app/style.dart';
+import 'package:shamo_app/widgets/loading_button.dart';
+
+class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
   @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  // Controller API
+  final TextEditingController emailController = TextEditingController(text: '');
+
+  final TextEditingController passwordController =
+      TextEditingController(text: '');
+
+  bool isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleSignIn() async {
+      final String email = emailController.text;
+      final String password = passwordController.text;
+
+      setState(() {
+        isLoading = true;
+      });
+
+      if (email.isEmpty || password.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: alertColor,
+            content: const Text(
+              'Isi Field.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+        setState(() {
+          isLoading = false;
+        });
+        return; // Exit the function if any field is empty
+      }
+
+      if (await authProvider.login(
+        email: email,
+        password: password,
+      )) {
+        Navigator.pushNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: alertColor,
+            content: const Text(
+              'Failed to login.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+
     // Header
     Widget header() {
       return Container(
@@ -71,6 +137,7 @@ class SignInPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: emailController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Email Address',
                           hintStyle: subtitleTextStlye,
@@ -124,6 +191,7 @@ class SignInPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: passwordController,
                         obscureText: true,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Password',
@@ -146,9 +214,7 @@ class SignInPage extends StatelessWidget {
         width: double.infinity,
         margin: const EdgeInsets.only(top: 30),
         child: TextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/home');
-          },
+          onPressed: () => handleSignIn(),
           style: TextButton.styleFrom(
             backgroundColor: primaryColor,
             shape: RoundedRectangleBorder(
@@ -220,7 +286,7 @@ class SignInPage extends StatelessWidget {
                           header(),
                           emailInput(),
                           passwordInput(),
-                          signInButton(),
+                          isLoading ? const LoadingButton() : signInButton(),
                           SizedBox(height: constraints.maxHeight * 0.1),
                           const Spacer(),
                           footer(),

@@ -1,11 +1,89 @@
-import 'package:flutter/material.dart';
-import 'package:shamo_app/style.dart';
+// ignore_for_file: use_build_context_synchronously
 
-class SignUpPage extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/providers/auth_provider.dart';
+import 'package:shamo_app/style.dart';
+import 'package:shamo_app/widgets/loading_button.dart';
+
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
   @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  // controller API
+  final TextEditingController nameController = TextEditingController(text: '');
+
+  final TextEditingController usernameController =
+      TextEditingController(text: '');
+
+  final TextEditingController emailController = TextEditingController(text: '');
+
+  final TextEditingController passwordController =
+      TextEditingController(text: '');
+
+  bool isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleSignUp() async {
+      final String name = nameController.text;
+      final String username = usernameController.text;
+      final String email = emailController.text;
+      final String password = passwordController.text;
+
+      setState(() {
+        isLoading = true;
+      });
+
+      if (name.isEmpty ||
+          username.isEmpty ||
+          email.isEmpty ||
+          password.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: alertColor,
+            content: const Text(
+              'Isi Field.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+        setState(() {
+          isLoading = false;
+        });
+        return; // Exit the function if any field is empty
+      }
+
+      if (await authProvider.register(
+        name: name,
+        username: username,
+        email: email,
+        password: password,
+      )) {
+        Navigator.pushNamed(context, '/sign-in');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: alertColor,
+            content: const Text(
+              'Failed to register.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+
     // Header
     Widget header() {
       return Container(
@@ -71,6 +149,7 @@ class SignUpPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: nameController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Full Name',
                           hintStyle: subtitleTextStlye,
@@ -124,6 +203,7 @@ class SignUpPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: usernameController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Username',
                           hintStyle: subtitleTextStlye,
@@ -177,6 +257,7 @@ class SignUpPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: emailController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Email Address',
                           hintStyle: subtitleTextStlye,
@@ -230,6 +311,7 @@ class SignUpPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: passwordController,
                         obscureText: true,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Password',
@@ -252,9 +334,7 @@ class SignUpPage extends StatelessWidget {
         width: double.infinity,
         margin: const EdgeInsets.only(top: 30),
         child: TextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/sign-in');
-          },
+          onPressed: () => handleSignUp(),
           style: TextButton.styleFrom(
             backgroundColor: primaryColor,
             shape: RoundedRectangleBorder(
@@ -324,7 +404,7 @@ class SignUpPage extends StatelessWidget {
                           usernameInput(),
                           emailInput(),
                           passwordInput(),
-                          signUpButton(),
+                          isLoading ? const LoadingButton() : signUpButton(),
                           SizedBox(height: constraints.maxHeight * 0.1),
                           const Spacer(),
                           footer(),
