@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shamo_app/models/product_model.dart';
 import 'package:shamo_app/style.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key});
+  const ProductCard({
+    super.key,
+    required this.productCard,
+  });
+
+  final ProductModel productCard;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +31,9 @@ class ProductCard extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            Image.asset(
-              'assets/images/img_shoes.png',
+            Image.network(
+              'https://luxspace-html.netlify.app/images/content/image-arrived-1.png',
+              // productCard.galleries![0].url.toString(),
               width: 215,
               height: 150,
               fit: BoxFit.cover,
@@ -37,7 +44,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hiking',
+                    productCard.category!.name.toString(),
                     style: secondaryTextStyle.copyWith(
                       fontSize: 12,
                       fontWeight: regular,
@@ -47,18 +54,19 @@ class ProductCard extends StatelessWidget {
                     height: 6,
                   ),
                   Text(
-                    'COURT VISION 2.0',
+                    productCard.name.toString(),
                     style: blackTextStyle.copyWith(
                       fontSize: 18,
                       fontWeight: semiBold,
                     ),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                   const SizedBox(
                     height: 6,
                   ),
                   Text(
-                    '\$58,67',
+                    '\$ ${productCard.price}',
                     style: priceTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: medium,

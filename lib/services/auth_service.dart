@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shamo_app/constant.dart';
-import 'package:shamo_app/models/users.model.dart';
+import 'package:shamo_app/models/users_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 

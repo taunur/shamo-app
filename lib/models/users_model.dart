@@ -9,14 +9,14 @@ class UserModel {
   String? token;
 
   UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.username,
-    required this.phone,
-    required this.roles,
-    required this.profilePhotoUrl,
-    required this.token,
+    this.id,
+    this.name,
+    this.email,
+    this.username,
+    this.phone,
+    this.roles,
+    this.profilePhotoUrl,
+    this.token,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/models/users_model.dart';
+import 'package:shamo_app/providers/auth_provider.dart';
+import 'package:shamo_app/providers/products_provider.dart';
 import 'package:shamo_app/style.dart';
 import 'package:shamo_app/widgets/product_card.dart';
 import 'package:shamo_app/widgets/product_tile.dart';
@@ -8,6 +12,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserModel user = authProvider.user;
+    ProductProvider productProvider = Provider.of<ProductProvider>(context);
+
     // Header
     Widget header() {
       return Container(
@@ -23,14 +31,14 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hallo, Alex',
+                    'Hallo, ${user.name}',
                     style: primaryTextStyle.copyWith(
-                      fontSize: 24,
+                      fontSize: 22,
                       fontWeight: semiBold,
                     ),
                   ),
                   Text(
-                    '@alexkeinn',
+                    '@${user.username}',
                     style: secondaryTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: regular,
@@ -39,14 +47,17 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(
+              width: 6,
+            ),
             Container(
               width: 54,
               height: 54,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage(
-                    'assets/images/img_profile.png',
+                      image: NetworkImage(
+                    user.profilePhotoUrl ?? 'assets/images/img_profile.png',
                   ))),
             )
           ],
@@ -213,12 +224,12 @@ class HomePage extends StatelessWidget {
             SizedBox(
               width: defaultMargin,
             ),
-            const Row(
-              children: [
-                ProductCard(),
-                ProductCard(),
-                ProductCard(),
-              ],
+            Row(
+              children: productProvider.products
+                  .map((product) => ProductCard(
+                        productCard: product,
+                      ))
+                  .toList(),
             )
           ]),
         ),
@@ -246,13 +257,12 @@ class HomePage extends StatelessWidget {
     Widget newArrivals() {
       return Container(
         margin: const EdgeInsets.only(top: 14),
-        child: const Column(
-          children: [
-            ProductTile(),
-            ProductTile(),
-            ProductTile(),
-            ProductTile()
-          ],
+        child: Column(
+          children: productProvider.products
+              .map((product) => ProductTile(
+                    productTile: product,
+                  ))
+              .toList(),
         ),
       );
     }

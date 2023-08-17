@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shamo_app/models/users.model.dart';
+import 'package:shamo_app/models/users_model.dart';
 import 'package:shamo_app/services/auth_service.dart';
 import 'package:logger/logger.dart';
 

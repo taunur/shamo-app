@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shamo_app/models/product_model.dart';
 import 'package:shamo_app/style.dart';
 
 class ProductTile extends StatelessWidget {
-  const ProductTile({super.key});
+  const ProductTile({
+    super.key,
+    required this.productTile,
+  });
+
+  final ProductModel productTile;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +26,9 @@ class ProductTile extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/img_shoes.png',
+              child: Image.network(
+                'https://luxspace-html.netlify.app/images/content/image-arrived-1.png',
+                // productTile.galleries![0].url.toString(),
                 width: 120,
                 height: 120,
                 fit: BoxFit.cover,
@@ -35,7 +42,7 @@ class ProductTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Football',
+                    productTile.category!.name.toString(),
                     style: secondaryTextStyle.copyWith(
                       fontSize: 12,
                     ),
@@ -44,17 +51,18 @@ class ProductTile extends StatelessWidget {
                     height: 6,
                   ),
                   Text(
-                    'Predator 20.3 Firm Ground',
+                    productTile.name.toString(),
                     style: primaryTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: semiBold,
                     ),
+                    maxLines: 1,
                   ),
                   const SizedBox(
                     height: 6,
                   ),
                   Text(
-                    '\$68,47',
+                    '\$ ${productTile.price}',
                     style: priceTextStyle.copyWith(
                       fontWeight: medium,
                     ),
