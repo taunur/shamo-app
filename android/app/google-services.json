@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "552021904446",
+    "project_id": "shamo-c832a",
+    "storage_bucket": "shamo-c832a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552021904446:android:cdd6526a58537fe808556f",
+        "android_client_info": {
+          "package_name": "com.taunur.shamo_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "552021904446-4mgsgftvsc4geok340t8rk649lcl83f1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA14yFxG3ado2NZMGIESHrBUlyzzHVi_ro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "552021904446-4mgsgftvsc4geok340t8rk649lcl83f1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
