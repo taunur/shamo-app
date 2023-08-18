@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shamo_app/models/product_model.dart';
+import 'package:shamo_app/pages/product.page.dart';
 import 'package:shamo_app/style.dart';
 
 class ProductTile extends StatelessWidget {
@@ -14,7 +16,12 @@ class ProductTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/product');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductPage(product: productTile),
+          ),
+        );
       },
       child: Container(
         margin: EdgeInsets.only(
@@ -26,12 +33,14 @@ class ProductTile extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                'https://luxspace-html.netlify.app/images/content/image-arrived-1.png',
-                // productTile.galleries![0].url.toString(),
+              child: CachedNetworkImage(
+                // imageUrl:
+                //     'https://media.tenor.com/aqN6k1GYfVYAAAAM/f-orever-online.gif',
+                imageUrl: productTile.galleries![0].url.toString(),
                 width: 120,
                 height: 120,
                 fit: BoxFit.cover,
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
             const SizedBox(

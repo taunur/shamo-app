@@ -16,7 +16,10 @@ class AuthService {
     required String password,
   }) async {
     var url = '$baseUrl/register';
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Connection': 'keep-alive',
+    };
     var body = jsonEncode({
       'name': name,
       'username': username,
@@ -48,7 +51,10 @@ class AuthService {
     required String password,
   }) async {
     var url = '$baseUrl/login';
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Connection': 'keep-alive',
+    };
     var body = jsonEncode({
       'email': email,
       'password': password,
@@ -60,7 +66,7 @@ class AuthService {
       body: body,
     );
 
-    logger.d(response.body);
+    // logger.d(response.body);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];

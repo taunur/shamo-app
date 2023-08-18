@@ -1,9 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/models/product_model.dart';
+import 'package:shamo_app/providers/wishlist_provider.dart';
 import 'package:shamo_app/style.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+  const ProductPage({super.key, required this.product});
+
+  final ProductModel product;
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -11,27 +17,28 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   List images = [
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
+    'assets/images/img_shoes1.png',
+    'assets/images/img_shoes1.png',
+    'assets/images/img_shoes1.png',
   ];
 
   List familiarShoes = [
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
-    'assets/images/img_shoes.png',
+    'assets/images/img_shoes1.png',
+    'assets/images/img_shoes2.png',
+    'assets/images/img_shoes3.png',
+    'assets/images/img_shoes4.png',
+    'assets/images/img_shoes5.png',
+    'assets/images/img_shoes6.png',
+    'assets/images/img_shoes7.png',
+    'assets/images/img_shoes8.png',
   ];
 
   int currentIndex = 0;
-  bool isWishlist = false;
 
   @override
   Widget build(BuildContext context) {
+    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+
     Future<void> showSuccessDialog() async {
       return showDialog(
         context: context,
@@ -175,13 +182,15 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
           CarouselSlider(
-            items: images
+            items: widget.product.galleries!
                 .map(
-                  (image) => Image.asset(
-                    image,
+                  (image) => CachedNetworkImage(
+                    imageUrl: image.url.toString(),
                     width: MediaQuery.of(context).size.width,
                     height: 310,
                     fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 )
                 .toList(),
@@ -200,7 +209,7 @@ class _ProductPageState extends State<ProductPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: images.map((e) {
+            children: widget.product.galleries!.map((e) {
               index++;
               return indicator(index);
             }).toList(),
@@ -238,7 +247,7 @@ class _ProductPageState extends State<ProductPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "TERREX URBAN LOW",
+                          widget.product.name.toString(),
                           style: primaryTextStyle.copyWith(
                             fontSize: 18,
                             fontWeight: semiBold,
@@ -248,7 +257,7 @@ class _ProductPageState extends State<ProductPage> {
                           height: 2,
                         ),
                         Text(
-                          "Hiking",
+                          widget.product.category!.name.toString(),
                           style: secondaryTextStyle.copyWith(
                             fontSize: 12,
                           ),
@@ -258,10 +267,9 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        isWishlist = !isWishlist;
-                      });
-                      if (isWishlist) {
+                      wishlistProvider.setProduct(widget.product);
+
+                      if (wishlistProvider.isWishlist(widget.product)) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             backgroundColor: secondaryColor,
@@ -290,7 +298,7 @@ class _ProductPageState extends State<ProductPage> {
                       }
                     },
                     child: Image.asset(
-                      isWishlist
+                      wishlistProvider.isWishlist(widget.product)
                           ? 'assets/images/btn_wishlist_blue.png'
                           : 'assets/images/btn_wishlist.png',
                       width: 46,
@@ -322,7 +330,7 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ),
                   Text(
-                    "\$143,98",
+                    "\$ ${widget.product.price}",
                     style: priceTextStyle.copyWith(
                       fontWeight: semiBold,
                       fontSize: 16,
@@ -353,7 +361,7 @@ class _ProductPageState extends State<ProductPage> {
                     height: 12,
                   ),
                   Text(
-                    "Unpaved trails and mixed surfaces are easy when you have the traction and support you need. Casual enough for the daily commute.",
+                    widget.product.description.toString(),
                     style: subtitleTextStlye.copyWith(
                       fontWeight: light,
                       fontSize: 14,

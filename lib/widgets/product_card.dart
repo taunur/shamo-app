@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shamo_app/models/product_model.dart';
+import 'package:shamo_app/pages/product.page.dart';
 import 'package:shamo_app/style.dart';
 
 class ProductCard extends StatelessWidget {
@@ -14,7 +16,12 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/product');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductPage(product: productCard),
+          ),
+        );
       },
       child: Container(
         height: 278,
@@ -31,23 +38,28 @@ class ProductCard extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            Image.network(
-              'https://luxspace-html.netlify.app/images/content/image-arrived-1.png',
-              // productCard.galleries![0].url.toString(),
-              width: 215,
+            CachedNetworkImage(
+              // imageUrl:
+              //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif',
+              imageUrl: productCard.galleries![0].url.toString(),
+              width: 150,
               height: 150,
               fit: BoxFit.cover,
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    productCard.category!.name.toString(),
-                    style: secondaryTextStyle.copyWith(
-                      fontSize: 12,
-                      fontWeight: regular,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      productCard.category!.name.toString(),
+                      style: secondaryTextStyle.copyWith(
+                        fontSize: 12,
+                        fontWeight: regular,
+                      ),
                     ),
                   ),
                   const SizedBox(

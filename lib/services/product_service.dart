@@ -10,7 +10,10 @@ class ProductService {
 
   Future<List<ProductModel>> getProducts() async {
     var url = '$baseUrl/products';
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Connection': 'keep-alive',
+    };
 
     var response = await http.get(
       Uri.parse(url),

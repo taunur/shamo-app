@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/providers/wishlist_provider.dart';
 import 'package:shamo_app/style.dart';
 import 'package:shamo_app/widgets/wishlist_card.dart';
 
@@ -7,6 +9,8 @@ class WishlistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+
     // header
     Widget header() {
       return AppBar(
@@ -63,7 +67,9 @@ class WishlistPage extends StatelessWidget {
               SizedBox(
                 height: 44,
                 child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/home');
+                    },
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         vertical: 10,
@@ -94,18 +100,17 @@ class WishlistPage extends StatelessWidget {
         child: Container(
           color: bgColor3,
           child: ListView(
-            padding: EdgeInsets.only(
-              left: defaultMargin,
-              right: defaultMargin,
-              top: 10,
-              bottom: defaultMargin,
-            ),
-            children: const [
-              WishlistCard(),
-              WishlistCard(),
-              WishlistCard(),
-            ],
-          ),
+              padding: EdgeInsets.only(
+                left: defaultMargin,
+                right: defaultMargin,
+                top: 10,
+                bottom: defaultMargin,
+              ),
+              children: wishlistProvider.wishlist
+                  .map((product) => WishlistCard(
+                        productModel: product,
+                      ))
+                  .toList()),
         ),
       );
     }
@@ -113,8 +118,7 @@ class WishlistPage extends StatelessWidget {
     return Column(
       children: [
         header(),
-        // emptyWishlist(),
-        content(),
+        wishlistProvider.wishlist.isEmpty ? emptyWishlist() : content(),
       ],
     );
   }

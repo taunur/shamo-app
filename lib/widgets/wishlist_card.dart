@@ -1,11 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/models/product_model.dart';
+import 'package:shamo_app/providers/wishlist_provider.dart';
 import 'package:shamo_app/style.dart';
 
 class WishlistCard extends StatelessWidget {
-  const WishlistCard({super.key});
+  const WishlistCard({super.key, required this.productModel});
+
+  final ProductModel productModel;
 
   @override
   Widget build(BuildContext context) {
+    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+
     return Container(
       margin: const EdgeInsets.only(
         top: 20,
@@ -24,9 +32,9 @@ class WishlistCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              'assets/images/img_shoes.png',
+            child: CachedNetworkImage(
               width: 60,
+              imageUrl: productModel.galleries![0].url.toString(),
             ),
           ),
           const SizedBox(
@@ -37,7 +45,7 @@ class WishlistCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Predator 20.3 Firm Ground Boots',
+                  productModel.name.toString(),
                   style: primaryTextStyle.copyWith(
                     fontSize: 14,
                     fontWeight: semiBold,
@@ -47,7 +55,7 @@ class WishlistCard extends StatelessWidget {
                   height: 2,
                 ),
                 Text(
-                  '\$143,98',
+                  '\$ ${productModel.price}',
                   style: priceTextStyle.copyWith(
                     fontSize: 14,
                   ),
@@ -55,9 +63,14 @@ class WishlistCard extends StatelessWidget {
               ],
             ),
           ),
-          Image.asset(
-            'assets/images/btn_wishlist_blue.png',
-            height: 34,
+          GestureDetector(
+            onTap: () {
+              wishlistProvider.setProduct(productModel);
+            },
+            child: Image.asset(
+              'assets/images/btn_wishlist_blue.png',
+              height: 34,
+            ),
           )
         ],
       ),
