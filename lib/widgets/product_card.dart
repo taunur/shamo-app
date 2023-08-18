@@ -45,6 +45,7 @@ class ProductCard extends StatelessWidget {
               width: 150,
               height: 150,
               fit: BoxFit.cover,
+              placeholder: (context, url) => const CircularProgressIndicator(),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
             Container(

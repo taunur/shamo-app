@@ -55,7 +55,7 @@ class WishlistCard extends StatelessWidget {
                   height: 2,
                 ),
                 Text(
-                  '\$ ${productModel.price}',
+                  '\$${productModel.price}',
                   style: priceTextStyle.copyWith(
                     fontSize: 14,
                   ),

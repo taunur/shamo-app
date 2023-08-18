@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/providers/cart_provider.dart';
 import 'package:shamo_app/style.dart';
 import 'package:shamo_app/widgets/checkout_card.dart';
 
@@ -7,6 +9,7 @@ class CheckoutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
     // Header
     PreferredSizeWidget header() {
       return AppBar(
@@ -53,8 +56,13 @@ class CheckoutPage extends StatelessWidget {
                     fontWeight: medium,
                   ),
                 ),
-                const CheckoutCard(),
-                const CheckoutCard(),
+                Column(
+                  children: cartProvider.carts
+                      .map((cart) => CheckoutCard(
+                            cartModel: cart,
+                          ))
+                      .toList(),
+                )
               ],
             ),
           ),
@@ -180,7 +188,7 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "2 Items",
+                      "${cartProvider.totalItems()} Items",
                       style: primaryTextStyle.copyWith(
                         fontWeight: medium,
                       ),
@@ -200,7 +208,7 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "\$575.96",
+                      "\$${cartProvider.totalPrice()}",
                       style: primaryTextStyle.copyWith(
                         fontWeight: medium,
                       ),
@@ -247,7 +255,7 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "\$575.92",
+                      "\$${cartProvider.totalPrice()}",
                       style: priceTextStyle.copyWith(
                         fontWeight: semiBold,
                       ),

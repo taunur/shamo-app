@@ -1,11 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/models/cart_model.dart';
+import 'package:shamo_app/providers/cart_provider.dart';
 import 'package:shamo_app/style.dart';
 
 class CartCard extends StatelessWidget {
-  const CartCard({super.key});
+  const CartCard({super.key, required this.cartModel});
+
+  final CartModel cartModel;
 
   @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+
     return Container(
       margin: EdgeInsets.only(
         top: defaultMargin,
@@ -24,15 +32,22 @@ class CartCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: const DecorationImage(
-                    image: AssetImage("assets/images/img_shoes1.png"),
+              CachedNetworkImage(
+                imageUrl: cartModel.productModel!.galleries![0].url.toString(),
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
               const SizedBox(
                 width: 12,
@@ -42,7 +57,7 @@ class CartCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Terrex Urban Low",
+                      cartModel.productModel!.name.toString(),
                       style: primaryTextStyle.copyWith(
                         fontWeight: semiBold,
                         fontSize: 14,
@@ -52,7 +67,7 @@ class CartCard extends StatelessWidget {
                       height: 2,
                     ),
                     Text(
-                      "\$143,98",
+                      "\$ ${cartModel.productModel!.price}",
                       style: priceTextStyle,
                     ),
                   ],
@@ -61,24 +76,34 @@ class CartCard extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/images/btn_add.png",
-                    width: 16,
+                  GestureDetector(
+                    onTap: () {
+                      cartProvider.addQuantity(cartModel.id!.toInt());
+                    },
+                    child: Image.asset(
+                      "assets/images/btn_add.png",
+                      width: 16,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 2,
                     ),
                     child: Text(
-                      "2",
+                      cartModel.quantity.toString(),
                       style: primaryTextStyle.copyWith(
                         fontWeight: medium,
                       ),
                     ),
                   ),
-                  Image.asset(
-                    "assets/images/btn_reduce.png",
-                    width: 16,
+                  GestureDetector(
+                    onTap: () {
+                      cartProvider.reduceQuantity(cartModel.id!.toInt());
+                    },
+                    child: Image.asset(
+                      "assets/images/btn_reduce.png",
+                      width: 16,
+                    ),
                   ),
                 ],
               )
@@ -88,7 +113,9 @@ class CartCard extends StatelessWidget {
             height: 12,
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              cartProvider.removeCart(cartModel.id!.toInt());
+            },
             child: Row(
               children: [
                 Image.asset(

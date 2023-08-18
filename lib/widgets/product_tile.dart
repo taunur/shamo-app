@@ -40,6 +40,8 @@ class ProductTile extends StatelessWidget {
                 width: 120,
                 height: 120,
                 fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
@@ -71,7 +73,7 @@ class ProductTile extends StatelessWidget {
                     height: 6,
                   ),
                   Text(
-                    '\$ ${productTile.price}',
+                    '\$${productTile.price}',
                     style: priceTextStyle.copyWith(
                       fontWeight: medium,
                     ),
