@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shamo_app/pages/home/chat_page.dart';
 import 'package:shamo_app/pages/home/home_page.dart';
 import 'package:shamo_app/pages/home/profile_page.dart';
 import 'package:shamo_app/pages/home/wishlist_page.dart';
+import 'package:shamo_app/providers/page_provider.dart';
 import 'package:shamo_app/style.dart';
 
 class MainPage extends StatefulWidget {
@@ -36,10 +38,10 @@ class _MainPageState extends State<MainPage> {
         false;
   }
 
-  int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
+    PageProvider pageProvider = Provider.of<PageProvider>(context);
+
     // cart
     Widget cartButton() {
       return FloatingActionButton(
@@ -74,26 +76,26 @@ class _MainPageState extends State<MainPage> {
                   icon: Image.asset(
                     'assets/images/ic_home.png',
                     width: 21,
-                    color: _currentIndex == 0
+                    color: pageProvider.currentIndex == 0
                         ? primaryColor
                         : const Color(0xff808191),
                   ),
                   onPressed: () {
                     setState(() {
-                      _currentIndex = 0;
+                      pageProvider.currentIndex = 0;
                     });
                   }),
               IconButton(
                   icon: Image.asset(
                     'assets/images/ic_message.png',
                     width: 20,
-                    color: _currentIndex == 1
+                    color: pageProvider.currentIndex == 1
                         ? primaryColor
                         : const Color(0xff808191),
                   ),
                   onPressed: () {
                     setState(() {
-                      _currentIndex = 1;
+                      pageProvider.currentIndex = 1;
                     });
                   }),
               const SizedBox(width: 40), // The dummy child
@@ -101,26 +103,26 @@ class _MainPageState extends State<MainPage> {
                   icon: Image.asset(
                     'assets/images/ic_wishlist.png',
                     width: 20,
-                    color: _currentIndex == 2
+                    color: pageProvider.currentIndex == 2
                         ? primaryColor
                         : const Color(0xff808191),
                   ),
                   onPressed: () {
                     setState(() {
-                      _currentIndex = 2;
+                      pageProvider.currentIndex = 2;
                     });
                   }),
               IconButton(
                   icon: Image.asset(
                     'assets/images/ic_profile.png',
                     width: 18,
-                    color: _currentIndex == 3
+                    color: pageProvider.currentIndex == 3
                         ? primaryColor
                         : const Color(0xff808191),
                   ),
                   onPressed: () {
                     setState(() {
-                      _currentIndex = 3;
+                      pageProvider.currentIndex = 3;
                     });
                   }),
             ],
@@ -131,7 +133,7 @@ class _MainPageState extends State<MainPage> {
 
     // body
     Widget bodyMain() {
-      switch (_currentIndex) {
+      switch (pageProvider.currentIndex) {
         case 0:
           return const HomePage();
         case 1:
@@ -148,7 +150,7 @@ class _MainPageState extends State<MainPage> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        backgroundColor: _currentIndex == 0 ? bgColor1 : bgColor3,
+        backgroundColor: pageProvider.currentIndex == 0 ? bgColor1 : bgColor3,
         floatingActionButton: cartButton(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: customBottomNav(),

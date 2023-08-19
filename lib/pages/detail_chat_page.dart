@@ -2,7 +2,11 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_app/models/message_mode.dart';
 import 'package:shamo_app/models/product_model.dart';
+import 'package:shamo_app/providers/auth_provider.dart';
+import 'package:shamo_app/services/message_service.dart';
 import 'package:shamo_app/style.dart';
 import 'package:shamo_app/widgets/chat_bubble.dart';
 
@@ -16,8 +20,25 @@ class DetailChatPage extends StatefulWidget {
 }
 
 class _DetailChatPageState extends State<DetailChatPage> {
+  TextEditingController messageController = TextEditingController(text: '');
+
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleAddMessage() async {
+      await MessageService().addMessage(
+        userModel: authProvider.user,
+        isFormUser: true,
+        productModel: widget.productModel,
+        message: messageController.text,
+      );
+      setState(() {
+        widget.productModel = UninitializedProductModel();
+        messageController.text = '';
+      });
+    }
+
     // Header
     PreferredSizeWidget header() {
       return PreferredSize(
@@ -167,6 +188,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
                         style: primaryTextStyle.copyWith(
                           fontSize: 14,
                         ),
+                        controller: messageController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Typle Message...',
                           hintStyle: subtitleTextStlye.copyWith(
@@ -181,7 +203,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
                   width: 20,
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: handleAddMessage,
                   child: Image.asset(
                     'assets/images/btn_send.png',
                     height: 45,
@@ -195,24 +217,27 @@ class _DetailChatPageState extends State<DetailChatPage> {
     }
 
     Widget content() {
-      return ListView(
-        padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-        children: const [
-          ChatBubble(
-            isSender: true,
-            text: 'Hi, This item is still available?',
-            hasProduk: true,
-          ),
-          ChatBubble(
-            isSender: false,
-            text: 'Good night, This item is only available in size 42 and 43',
-          ),
-          ChatBubble(
-            isSender: true,
-            text: 'Owww, it suits me very well',
-          ),
-        ],
-      );
+      return StreamBuilder<List<MessageModel>>(
+          stream: MessageService()
+              .getMessagesByUserId(userId: authProvider.user.id),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView(
+                padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+                children: snapshot.data!
+                    .map((MessageModel messageModel) => ChatBubble(
+                          isSender: messageModel.isFromUser ?? false,
+                          text: messageModel.message.toString(),
+                          productModel: messageModel.productModel!,
+                        ))
+                    .toList(),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          });
     }
 
     return Scaffold(

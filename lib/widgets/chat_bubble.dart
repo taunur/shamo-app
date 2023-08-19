@@ -1,17 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shamo_app/models/product_model.dart';
 import 'package:shamo_app/style.dart';
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble(
       {this.isSender = false,
       this.text = '',
-      this.hasProduk = false,
+      required this.productModel,
       super.key});
 
   final String text;
   final bool isSender;
-  final bool hasProduk;
+  final ProductModel productModel;
   @override
   Widget build(BuildContext context) {
     Widget productReview() {
@@ -39,8 +41,8 @@ class ChatBubble extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'assets/images/img_shoes1.png',
+                    child: CachedNetworkImage(
+                      imageUrl: productModel.galleries![0].url.toString(),
                       height: 70,
                     ),
                   ),
@@ -50,7 +52,7 @@ class ChatBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "COURT VISION 2.0 SHOES",
+                        productModel.name.toString(),
                         style: primaryTextStyle.copyWith(
                           fontSize: 14,
                         ),
@@ -59,7 +61,7 @@ class ChatBubble extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        "\$57,15",
+                        "\$ ${productModel.price}",
                         style: priceTextStyle.copyWith(
                           fontSize: 14,
                           fontWeight: medium,
@@ -123,7 +125,9 @@ class ChatBubble extends StatelessWidget {
         crossAxisAlignment:
             isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          hasProduk ? productReview() : const SizedBox(),
+          productModel is UninitializedProductModel
+              ? const SizedBox()
+              : productReview(),
           Row(
             mainAxisAlignment:
                 isSender ? MainAxisAlignment.end : MainAxisAlignment.start,

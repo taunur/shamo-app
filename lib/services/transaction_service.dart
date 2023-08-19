@@ -36,7 +36,7 @@ class TransactionService {
       body: body,
     );
 
-    logger.e(response.body);
+    logger.d(response.body);
 
     if (response.statusCode == 200) {
       return true;

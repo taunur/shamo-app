@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:shamo_app/models/message_mode.dart';
 import 'package:shamo_app/models/product_model.dart';
 import 'package:shamo_app/pages/detail_chat_page.dart';
 import 'package:shamo_app/style.dart';
 
 class ChatTile extends StatelessWidget {
-  const ChatTile({super.key});
+  const ChatTile({super.key, required this.messageModel});
+
+  final MessageModel messageModel;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class ChatTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Good night, This item is on stock 100k',
+                        messageModel.message.toString(),
                         style: secondaryTextStyle.copyWith(
                           fontWeight: light,
                           overflow: TextOverflow.ellipsis,
