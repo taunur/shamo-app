@@ -64,6 +64,7 @@ class _MainPageState extends State<MainPage> {
           top: Radius.circular(20),
         ),
         child: BottomAppBar(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           color: bgColor4,
           height: 80,
           shape: const CircularNotchedRectangle(),
@@ -98,7 +99,7 @@ class _MainPageState extends State<MainPage> {
                       pageProvider.currentIndex = 1;
                     });
                   }),
-              const SizedBox(width: 40), // The dummy child
+              const SizedBox(width: 30), // The dummy child
               IconButton(
                   icon: Image.asset(
                     'assets/images/ic_wishlist.png',
